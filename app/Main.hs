@@ -31,18 +31,23 @@ defaultOptions = Options
     , flag          = ShowUsage
     }
 
-parseArgs :: IO (Either String Options)
-parseArgs = do
+parseCommand :: IO (Either String Options)
+parseCommand = do
     argv <- getArgs
-    case getOpt RequireOrder options argv of
-        (opts, [], []) -> case foldM (flip id) defaultOptions opts of
-            Right opts'         -> return (Right opts')
+    case getOpt Permute options argv of
+        (opts, args, []) -> case foldM (flip id) defaultOptions opts of
+            Right opts'         -> return (parseOpts opts' args)
             Left errorMessage   -> return (Left (errorMessage ++ "\n" ++ usage))
         (_, _, _) -> return (Left usage)
+    where
+        parseOpts :: Options -> [String] -> Either String Options
+        parseOpts opts (x:y:_)  = Right opts {argOrder = read x, argAlphabet = y}
+        parseOpts opts [x]      = Right opts {argOrder = read x}
+        parseOpts _ []          = Left usage
 
 main :: IO ()
 main = do
-    opts <- parseArgs
+    opts <- parseCommand
     case opts of
         Right opts'         -> print $ show opts' 
         Left errorMessage   -> putStr errorMessage
