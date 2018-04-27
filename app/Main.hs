@@ -1,44 +1,44 @@
-module Main where
+module Main (main) where
 
 import Control.Monad
 import System.Console.GetOpt
-import System.Environment(getArgs, getProgName)
+import System.Environment(getArgs)
 
 data Options = Options
     { argOrder :: Int
     , argAlphabet :: String
-    , optCheck :: Bool
-    , optUnique :: Bool
-    , optClean :: Bool
+    , flag :: Flag
     } deriving Show
+
+data Flag = Check | Unique | Clean | ShowUsage
+    deriving (Eq, Show, Bounded, Enum)
+
+usage :: String
+usage = usageInfo "USAGE: ./deBruijn n [a] [--check|--unique|--clean]" options
 
 options :: [OptDescr (Options -> Either String Options)]
 options =
-    [ Option ['c'] ["check"] (NoArg (\opts -> Right opts { optCheck = True })) "checks if a sequence is a de Bruijn sequence,"
-    , Option ['u'] ["unique"] (NoArg (\opts -> Right opts { optUnique = True })) "number of suits"
-    , Option [] ["clean"] (NoArg (\opts -> Right opts { optClean = True })) "verbose output"
+    [ Option ['c'] ["check"] (NoArg (\opts -> Right opts { flag = Check })) "checks if a sequence is a de Bruijn sequence,"
+    , Option ['u'] ["unique"] (NoArg (\opts -> Right opts { flag = Unique })) "number of suits"
+    , Option [] ["clean"] (NoArg (\opts -> Right opts { flag = Clean })) "verbose output"
+    , Option ['h'] ["help"] (NoArg Right) "verbose output"
     ]
 
 defaultOptions:: Options
 defaultOptions = Options
     { argOrder      = 3
     , argAlphabet   = "01"
-    , optCheck      = False
-    , optUnique     = False
-    , optClean      = False
+    , flag          = ShowUsage
     }
 
 parseArgs :: IO (Either String Options)
 parseArgs = do
     argv <- getArgs
-    progName <- getProgName
-    let header = "USAGE: " ++ progName ++ " n [a] [--check|--unique|--clean]"
-    let usage = usageInfo header options
     case getOpt RequireOrder options argv of
         (opts, [], []) -> case foldM (flip id) defaultOptions opts of
             Right opts'         -> return (Right opts')
             Left errorMessage   -> return (Left (errorMessage ++ "\n" ++ usage))
-        (_, _, _) -> return (Left (usage :: String))
+        (_, _, _) -> return (Left usage)
 
 main :: IO ()
 main = do
