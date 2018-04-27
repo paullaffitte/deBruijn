@@ -5,7 +5,10 @@
 -- Parser Module
 -}
 
-module Parser (parseCommand) where
+module Parser
+    ( parseCommand
+    , Options(..)
+    ) where
 
 import Control.Monad
 import System.Console.GetOpt

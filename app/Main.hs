@@ -8,10 +8,11 @@
 module Main (main) where
 
 import Parser
+import DeBruijn
 
 main :: IO ()
 main = do
     opts <- parseCommand
     case opts of
-        Right opts'         -> print $ show opts' 
+        Right opts'         -> putStr $ show $ deBruijn (argOrder opts') (argAlphabet opts')
         Left errorMessage   -> putStr errorMessage
