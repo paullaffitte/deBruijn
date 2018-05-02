@@ -14,5 +14,5 @@ main :: IO ()
 main = do
     opts <- parseCommand
     case opts of
-        Right opts'         -> putStr $ show $ deBruijn (argOrder opts') (argAlphabet opts')
+        Right opts'         -> do bruijn <- deBruijn (argOrder opts') (argAlphabet opts'); putStr bruijn
         Left errorMessage   -> putStr errorMessage
