@@ -18,22 +18,20 @@ def de_bruijn(base, order):
     sequence = []
 
     def db(t, p):
-        # print(sequence)
-        print(t, p)
-        # print(tab)
-        if t <= order:                              # t <= order
-            tab[t] = tab[t - p]                     #   
-            # print('order')
-            db(t + 1, p)                            #   tab = db (t + 1) p, with tab[t] = tab[t - p]
-            # print('range')
-            for j in range(tab[t - p] + 1, base):   #   for all letter greater than 
-                tab[t] = j                          #   tab[t] = letter
-                db(t + 1, t)                        #   -- db (t + 1) p, for tab[t] = [l | l <- base, l > tab[t - p]]
-        elif order % p == 0:                        # order % p == 0
-            sequence.extend(tab[1:p + 1])           #   sequence ++ tab[1:p + 1]
-            # print('extends')
+        def generate(letter):
+            if letter < base:
+                tab[t] = letter             #   tab[t] = letter
+                db(t + 1, t)                #   -- db (t + 1) p, for tab[t] = [l | l <- base, l > tab[t - p]]
+                generate(letter + 1)
+
+        if t <= order:                      # t <= order
+            tab[t] = tab[t - p]
+            db(t + 1, p)                    #   tab = db (t + 1) p, with tab[t] = tab[t - p]
+            generate(tab[t] + 1)
+        elif order % p == 0:                # order % p == 0
+            sequence.extend(tab[1:p + 1])   #   sequence ++ tab[1:p + 1]
 
     db(1, 1)
     return "".join(alphabet[i] for i in sequence)
 
-print(de_bruijn(2, 5))
+print(de_bruijn('abc', 5))

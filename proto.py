@@ -18,11 +18,9 @@ def de_bruijn(k, n):
     sequence = []
 
     def db(t, p):
-        print(sequence)
         if t > n:
             if n % p == 0:
                 sequence.extend(a[1:p + 1])
-                print('extends')
         else:
             a[t] = a[t - p]
             db(t + 1, p)
@@ -32,4 +30,4 @@ def de_bruijn(k, n):
     db(1, 1)
     return "".join(alphabet[i] for i in sequence)
 
-print(de_bruijn(2, 2))
+print(de_bruijn('abc', 5))
