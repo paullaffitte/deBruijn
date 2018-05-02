@@ -21,17 +21,17 @@ def de_bruijn(base, order):
         def generate(letter):
             if letter < base:
                 tab[t] = letter             #   tab[t] = letter
-                db(t + 1, t)                #   -- db (t + 1) p, for tab[t] = [l | l <- base, l > tab[t - p]]
-                generate(letter + 1)
+                return db(t + 1, t) + generate(letter + 1) # -- db (t + 1) p, for tab[t] = [l | l <- base, l > tab[t - p]]
+            return []
 
         if t <= order:                      # t <= order
             tab[t] = tab[t - p]
-            db(t + 1, p)                    #   tab = db (t + 1) p, with tab[t] = tab[t - p]
-            generate(tab[t] + 1)
+            return db(t + 1, p) + generate(tab[t] + 1)  #   tab = db (t + 1) p, with tab[t] = tab[t - p]
         elif order % p == 0:                # order % p == 0
-            sequence.extend(tab[1:p + 1])   #   sequence ++ tab[1:p + 1]
+            return tab[1:p + 1]
+        return []
 
-    db(1, 1)
-    return "".join(alphabet[i] for i in sequence)
+    bruijnSeq = db(1, 1)
+    return "".join(alphabet[i] for i in bruijnSeq)
 
 print(de_bruijn('abc', 5))
