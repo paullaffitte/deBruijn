@@ -12,8 +12,8 @@ module DeBruijn
 
 import Prelude hiding(sequence)
 
-deBruijn :: Int -> String -> IO String
-deBruijn order alphabet = return [ alphabet !! x | x <- sequence]
+deBruijn :: Int -> String -> String
+deBruijn order alphabet = [ alphabet !! x | x <- sequence]
     where
         base        = length alphabet
         sequence    = duval base order

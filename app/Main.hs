@@ -15,9 +15,12 @@ main :: IO ()
 main = do
     opts <- parseCommand
     case opts of
-        Right opts'     -> case (flag opts') of
-            Check       -> putStrLn check
-            Unique      -> putStrLn unique
-            Clean       -> putStrLn clean
-            otherwise   -> do bruijn <- deBruijn (argOrder opts') (argAlphabet opts'); putStrLn bruijn
         Left errorMessage -> putStr errorMessage
+        Right opts'     -> case (flag opts') of
+            Check       -> check    order alphabet
+            Unique      -> unique   order alphabet
+            Clean       -> clean    order alphabet
+            otherwise   -> do putStrLn (deBruijn order alphabet)
+            where
+                order = (argOrder opts')
+                alphabet = (argAlphabet opts')

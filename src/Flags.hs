@@ -11,11 +11,16 @@ module Flags
     , clean
     ) where
 
-check :: String
-check = "check"
+import Utils
 
-unique :: String
-unique = "unique"
+check :: Int -> String -> IO ()
+check order alphabet = do
+    userInput <- getLine
+    putStrLn $ if checkSequence userInput then "OK" else "KO"
+        where checkSequence = isDeBruijnSequence order alphabet
 
-clean :: String
-clean = "clean"
+unique :: Int -> String -> IO ()
+unique order alphabet = putStrLn "unique"
+
+clean :: Int -> String -> IO ()
+clean order alphabet = putStrLn "clean"
