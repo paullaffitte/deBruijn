@@ -30,4 +30,4 @@ def de_bruijn(k, n):
     db(1, 1)
     return "".join(alphabet[i] for i in sequence)
 
-print(de_bruijn('abc', 5))
+print(de_bruijn(3, 4))

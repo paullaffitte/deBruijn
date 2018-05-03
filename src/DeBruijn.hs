@@ -28,7 +28,7 @@ db :: Int -> Int -> Int -> Int -> Context -> Context
 db order base t p context
     | t <= order        = dbGen order base t p letter context
     | mod order p == 0  = (bruijn ++ take p a, a)
-    | otherwise         = (bruijn, a)
+    | otherwise         = context
         where
             letter  = a !! (t - p)
             bruijn  = fst context
@@ -37,7 +37,7 @@ db order base t p context
 generate :: Int -> Int -> Int -> Int -> Context -> Context
 generate order base t letter context
     | letter < base = dbGen order base t t letter context
-    | otherwise     = (bruijn, a)
+    | otherwise     = context
         where
             bruijn  = fst context
             a       = snd context
