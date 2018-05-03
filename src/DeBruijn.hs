@@ -7,7 +7,6 @@
 
 module DeBruijn
     ( deBruijn
-    , lyndonWord
     ) where
 
 import Prelude hiding(sequence)
@@ -23,17 +22,13 @@ duval base order = concat (filter (\xs -> mod order (length xs) == 0) (lyndonWor
 
 lyndonWords :: Int -> Int -> [[Int]] -> [[Int]]
 lyndonWords base order prevWords
-    | word == []    = prevWords
-    | otherwise     = lyndonWords base order (prevWords ++ [word])
-        where word  = lyndonWord base order (last prevWords)
-
-lyndonWord :: Int -> Int -> [Int] -> [Int]
-lyndonWord base order prevWord = incr (dropZ word)
+    | last prevWords == []    = init prevWords
+    | otherwise     = lyndonWords base order (prevWords ++ [incr (dropZ word)])
     where
-        word    = take order (cycle prevWord)
+        word        = take order (cycle (last prevWords))
+        incr :: [Int] -> [Int]
+        incr []     = []
+        incr xs     = (init xs) ++ [last xs + 1]
         dropZ xs
             | length xs /= 0 && last xs == (base - 1) = dropZ (init xs)
             | otherwise = xs
-        incr :: [Int] -> [Int]
-        incr [] = []
-        incr xs = (init xs) ++ [last xs + 1]
