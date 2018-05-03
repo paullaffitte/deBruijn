@@ -8,6 +8,7 @@
 module Parser
     ( parseCommand
     , Options(..)
+    , Flag(..)
     ) where
 
 import Control.Monad
