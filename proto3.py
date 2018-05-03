@@ -1,24 +1,26 @@
 #! /usr/bin/python3
 
 def lyndonWord(base, maxLength, previousWord):
-    previousWord[-1] += 1
-    wordLend = len(previousWord)
+    wordLen = len(previousWord)
     newWord = list(previousWord)
 
     while len(previousWord) < maxLength: # repeat word to fill exactly n syms
-        previousWord.append(previousWord[-wordLend])
+        previousWord.append(previousWord[-wordLen])
 
     while previousWord and previousWord[-1] == base - 1: # delete trailing z's
         previousWord.pop()
 
-    return (previousWord, newWord);
+    if previousWord:
+        previousWord[-1] += 1
+
+    return previousWord;
 
 def lyndonWords(base, maxLength):
-    previous = [-1]
+    word = [0]
     words = []
-    while previous:
-        (previous, word) = lyndonWord(base, maxLength, previous)
-        words.append(word)
+    while word:
+        words.append(list(word))
+        word = lyndonWord(base, maxLength, word)
     return words
 
 def deBruijn(base, maxLength):
@@ -31,4 +33,4 @@ def deBruijn(base, maxLength):
             bruijn += word
     return ''.join(str(num) for num in bruijn)
 
-print(deBruijn(2, 2))
+print(deBruijn(3, 4))
