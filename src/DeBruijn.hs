@@ -7,46 +7,33 @@
 
 module DeBruijn
     ( deBruijn
+    , lyndonWord
     ) where
 
-type Context = ([Int], [Int])
-
-updateElem :: Int -> a -> [a] -> [a]
-updateElem i x xs = take i xs ++ x : drop (i + 1) xs
-
-mergeContext :: ([a], [a]) -> ([a], [a]) -> ([a], [a]) 
-mergeContext a b = (fst a ++ fst b, snd b)
+import Prelude hiding(sequence)
 
 deBruijn :: Int -> String -> IO String
-deBruijn order alphabet = return [ alphabet !! x | x <- bruijn]
+deBruijn order alphabet = return [ alphabet !! x | x <- sequence]
     where
-        base    = length alphabet
-        bruijn  = fst context
-        context = db order base 1 1 ([], replicate (order * base) 0)
+        base        = length alphabet
+        sequence    = duval base order
 
-db :: Int -> Int -> Int -> Int -> Context -> Context
-db order base t p context
-    | t <= order        = dbGen order base t p letter context
-    | mod order p == 0  = (bruijn ++ take p a, a)
-    | otherwise         = context
-        where
-            letter  = a !! (t - p)
-            bruijn  = fst context
-            a       = snd context
+duval :: Int -> Int -> [Int]
+duval base order = concat (filter (\xs -> mod order (length xs) == 0) (lyndonWords base order [[0]]))
 
-generate :: Int -> Int -> Int -> Int -> Context -> Context
-generate order base t letter context
-    | letter < base = dbGen order base t t letter context
-    | otherwise     = context
-        where
-            bruijn  = fst context
-            a       = snd context
+lyndonWords :: Int -> Int -> [[Int]] -> [[Int]]
+lyndonWords base order prevWords
+    | word == []    = prevWords
+    | otherwise     = lyndonWords base order (prevWords ++ [word])
+        where word  = lyndonWord base order (last prevWords)
 
-dbGen :: Int -> Int -> Int -> Int -> Int -> Context -> Context
-dbGen order base t p letter context = mergeContext dbRet genRet
+lyndonWord :: Int -> Int -> [Int] -> [Int]
+lyndonWord base order prevWord = incr (dropZ word)
     where
-        bruijn      = fst context
-        a           = snd context
-        a'          = updateElem t letter a
-        dbRet       = db order base (t + 1) p (bruijn, a')
-        genRet      = generate order base t (letter + 1) (mergeContext (bruijn, a') dbRet)
+        word    = take order (cycle prevWord)
+        dropZ xs
+            | length xs /= 0 && last xs == (base - 1) = dropZ (init xs)
+            | otherwise = xs
+        incr :: [Int] -> [Int]
+        incr [] = []
+        incr xs = (init xs) ++ [last xs + 1]
