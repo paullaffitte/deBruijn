@@ -9,6 +9,7 @@ module Utils
     ( getWords
     , isDeBruijnSequence
     , areUniques
+    , areEquivalents
     ) where
 
 import Prelude hiding(sequence)
@@ -34,6 +35,15 @@ areUniques :: (Ord a) => [a] -> Bool
 areUniques xs = uniqueCheck sorted (drop 1 sorted)
     where
         sorted = sort xs
-        uniqueCheck (x:xs) (x':xs') = if x /= x' then uniqueCheck xs xs' else False
+        uniqueCheck (x:xs) (y:ys) = if x /= y then uniqueCheck xs ys else False
         uniqueCheck [] _   = True
         uniqueCheck _ []   = True
+
+rotate :: Int -> [a] -> [a]
+rotate _ [] = []
+rotate 0 xs = xs
+rotate n xs = rotate (n - 1) (last xs : init xs)
+
+areEquivalents :: (Eq a) => [a] -> [a] -> Bool
+areEquivalents [] [] = True
+areEquivalents xs ys = foldr (||) False [ rotate x xs == ys | x <- [0..(length xs)] ]
