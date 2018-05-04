@@ -7,9 +7,15 @@
 
 NAME	=	deBruijn
 
+SRC	=	app/Main.hs		\
+		src/DeBruijn.hs		\
+		src/Flags.hs		\
+		src/Parser.hs		\
+		src/Utils.hs
+
 all:	$(NAME)
 
-$(NAME):
+$(NAME): $(SRC)
 	stack build --copy-bins --local-bin-path .
 
 clean:
