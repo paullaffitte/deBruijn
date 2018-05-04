@@ -21,13 +21,13 @@ deBruijn order alphabet = [ alphabet !! x | x <- sequence]
         sequence    = duval base order
 
 duval :: Int -> Int -> [Int]
-duval base order = concat (filter (\xs -> mod order (length xs) == 0) (lyndonWords base order [[0]]))
+duval base order = concat (filter (\xs -> mod order (length xs) == 0) (reverse (lyndonWords base order [[0]])))
 
 lyndonWords :: Int -> Int -> [[Int]] -> [[Int]]
 lyndonWords base order prevWords
     | word == []    = prevWords
-    | otherwise     = lyndonWords base order (prevWords ++ [word])
-        where word  = lyndonWord base order (last prevWords)
+    | otherwise     = lyndonWords base order (word : prevWords)
+        where word  = lyndonWord base order (head prevWords)
 
 lyndonWord :: Int -> Int -> [Int] -> [Int]
 lyndonWord base order prevWord = incr (dropZ word)
