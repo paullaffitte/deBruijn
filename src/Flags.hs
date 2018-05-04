@@ -44,4 +44,6 @@ getLines = do lines <- readLines []; return $ reverse lines
 clean :: Int -> String -> IO ()
 clean order alphabet = do
     lines <- getLines
-    putStrLn $ show lines
+    putStr $ foldr (\x y -> x ++ "\n" ++ y) "" (filterNotDeBruijn $ filter2 (\x y -> not $ areEquivalents x y) lines)
+    where
+        filterNotDeBruijn xs = [ x | x <- xs, isDeBruijnSequence order alphabet x ]

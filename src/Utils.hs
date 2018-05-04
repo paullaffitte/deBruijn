@@ -10,6 +10,7 @@ module Utils
     , isDeBruijnSequence
     , areUniques
     , areEquivalents
+    , filter2
     ) where
 
 import Prelude hiding(sequence)
@@ -47,3 +48,8 @@ rotate n xs = rotate (n - 1) (last xs : init xs)
 areEquivalents :: (Eq a) => [a] -> [a] -> Bool
 areEquivalents [] [] = True
 areEquivalents xs ys = foldr (||) False [ rotate x xs == ys | x <- [0..(length xs)] ]
+
+filter2 :: (a -> a -> Bool) -> [a] -> [a]
+filter2 f []        = []
+filter2 f [x]       = [x]
+filter2 f (x:xs)    = x : [ y  | y <- filter2 f xs, f y x ]
