@@ -13,6 +13,8 @@ module DeBruijn
 import Prelude hiding(sequence)
 
 deBruijn :: Int -> String -> String
+deBruijn 0 _            = ""
+deBruijn _ ""           = ""
 deBruijn order alphabet = [ alphabet !! x | x <- sequence]
     where
         base        = length alphabet

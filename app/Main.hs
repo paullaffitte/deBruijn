@@ -7,6 +7,7 @@
 
 module Main (main) where
 
+import System.Exit
 import Parser
 import Flags
 import DeBruijn
@@ -15,7 +16,7 @@ main :: IO ()
 main = do
     opts <- parseCommand
     case opts of
-        Left errorMessage -> putStr errorMessage
+        Left errorMessage -> do putStr errorMessage; exitWith (ExitFailure 84)
         Right opts'     -> case (flag opts') of
             Check       -> check    order alphabet
             Unique      -> unique   order alphabet

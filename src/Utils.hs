@@ -8,6 +8,7 @@
 module Utils
     ( getWords
     , isDeBruijnSequence
+    , areUniques
     ) where
 
 import Prelude hiding(sequence)
@@ -28,3 +29,11 @@ isDeBruijnSequence order alphabet sequence = reference == words
     where
         reference   = sort (getWords order . deBruijn order $ alphabet)
         words       = sort (getWords order sequence)
+
+areUniques :: (Ord a) => [a] -> Bool
+areUniques xs = uniqueCheck sorted (drop 1 sorted)
+    where
+        sorted = sort xs
+        uniqueCheck (x:xs) (x':xs') = if x /= x' then uniqueCheck xs xs' else False
+        uniqueCheck [] _   = True
+        uniqueCheck _ []   = True

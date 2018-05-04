@@ -14,6 +14,7 @@ module Parser
 import Control.Monad
 import System.Console.GetOpt
 import System.Environment(getArgs)
+import Utils
 
 data Options = Options
     { argOrder :: Int
@@ -48,10 +49,15 @@ parseCommand = do
     case getOpt Permute options argv of
         (opts, args, []) -> case foldM (flip id) defaultOptions opts of
             Right opts'         -> return (parseOpts opts' args)
-            Left errorMessage   -> return (Left (errorMessage ++ "\n" ++ usage))
-        (_, _, _) -> return (Left usage)
+            Left errorMessage   -> return $ Left (errorMessage ++ "\n" ++ usage)
+        (_, _, _) -> return $ Left usage
     where
         parseOpts :: Options -> [String] -> Either String Options
-        parseOpts opts (x:y:_)  = Right opts {argOrder = read x, argAlphabet = y}
-        parseOpts opts [x]      = Right opts {argOrder = read x}
+        parseOpts opts (x:y:_)  = validate $ opts {argOrder = read x, argAlphabet = y}
+        parseOpts opts [x]      = validate $ opts {argOrder = read x}
         parseOpts _ []          = Left usage
+
+validate :: Options -> Either String Options
+validate opts
+    | areUniques $ argAlphabet opts = Right opts
+    | otherwise                     = Left usage
