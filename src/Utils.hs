@@ -13,7 +13,7 @@ module Utils
     , filter2
     ) where
 
-import Prelude hiding(sequence)
+import Prelude hiding(sequence, words)
 import DeBruijn
 import Data.List hiding(words)
 
@@ -36,9 +36,9 @@ areUniques :: (Ord a) => [a] -> Bool
 areUniques xs = uniqueCheck sorted (drop 1 sorted)
     where
         sorted = sort xs
-        uniqueCheck (x:xs) (y:ys) = if x /= y then uniqueCheck xs ys else False
-        uniqueCheck [] _   = True
-        uniqueCheck _ []   = True
+        uniqueCheck (x:xs') (y:ys)  = if x /= y then uniqueCheck xs' ys else False
+        uniqueCheck [] _            = True
+        uniqueCheck _ []            = True
 
 rotate :: Int -> [a] -> [a]
 rotate _ [] = []
@@ -50,6 +50,6 @@ areEquivalents [] [] = True
 areEquivalents xs ys = foldr (||) False [ rotate x xs == ys | x <- [0..(length xs)] ]
 
 filter2 :: (a -> a -> Bool) -> [a] -> [a]
-filter2 f []        = []
-filter2 f [x]       = [x]
+filter2 _ []        = []
+filter2 _ [x]       = [x]
 filter2 f (x:xs)    = x : [ y  | y <- filter2 f xs, f y x ]

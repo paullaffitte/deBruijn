@@ -11,6 +11,7 @@ module Flags
     , clean
     ) where
 
+import Prelude hiding(lines)
 import Utils
 
 printOKKO :: Bool -> IO ()

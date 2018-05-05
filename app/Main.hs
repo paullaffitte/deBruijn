@@ -21,7 +21,7 @@ main = do
             Check       -> check    order alphabet
             Unique      -> unique   order alphabet
             Clean       -> clean    order alphabet
-            otherwise   -> do putStrLn (deBruijn order alphabet)
+            _           -> do putStrLn (deBruijn order alphabet)
             where
                 order = (argOrder opts')
                 alphabet = (argAlphabet opts')
