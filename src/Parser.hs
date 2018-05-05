@@ -54,10 +54,11 @@ parseCommand = do
     where
         parseOpts :: Options -> [String] -> Either String Options
         parseOpts opts (x:y:_)
-            | length y > 1  = validate $ opts {argOrder = read x, argAlphabet = y}
-            | otherwise     = Left usage
-        parseOpts opts [x]      = validate $ opts {argOrder = read x}
-        parseOpts _ []          = Left usage
+            | isValid   = validate $ opts {argOrder = read x, argAlphabet = y}
+            | otherwise = Left usage
+            where isValid = length y > 1 || (length y /= 0 && length y == read x)
+        parseOpts opts [x]  = validate $ opts {argOrder = read x}
+        parseOpts _ []      = Left usage
 
 validate :: Options -> Either String Options
 validate opts
