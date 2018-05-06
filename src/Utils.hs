@@ -52,4 +52,4 @@ areEquivalents xs ys = foldr (||) False [ rotate x xs == ys | x <- [0..(length x
 filter2 :: (a -> a -> Bool) -> [a] -> [a]
 filter2 _ []        = []
 filter2 _ [x]       = [x]
-filter2 f (x:xs)    = x : [ y  | y <- filter2 f xs, f y x ]
+filter2 f (x:xs)    = x : [ y | y <- filter2 f xs, f y x ]
